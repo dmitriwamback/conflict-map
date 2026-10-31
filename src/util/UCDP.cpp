@@ -15,15 +15,22 @@
 #include <QJsonValue>
 #include <QDebug>
 
-std::vector<glm::vec3> UCDP::GetConflictPoints(const char* jsonPath) {
+#include "../core/objects/Marker.h"
+
+std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
 
     QFile file(jsonPath);
-    std::vector<glm::vec3> points;
+    std::vector<MarkerInstance> points;
 
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Failed to open file";
-        return std::vector<glm::vec3>();
+        return std::vector<MarkerInstance>();
     }
+
+    float ucdpMaxYear = 2025;
+    float ucdpMinYear = 1989;
+
+    float delta = ucdpMaxYear - ucdpMinYear;
 
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
 
@@ -35,6 +42,8 @@ std::vector<glm::vec3> UCDP::GetConflictPoints(const char* jsonPath) {
         int id = event["id"].toInt();
         int year = event["year"].toInt();
 
+        float yr = (static_cast<float>(year) - ucdpMinYear) / delta;
+
         QString country = event["country"].toString();
         QString conflict = event["conflict_name"].toString();
 
@@ -45,7 +54,11 @@ std::vector<glm::vec3> UCDP::GetConflictPoints(const char* jsonPath) {
         float longRad = ToRadians(longitude);
         glm::vec2 mercator = ToMercator(latRad, longRad);
 
-        points.push_back(glm::vec3(mercator.x * 10.0f, mercator.y * 10.0f, 0));
+        MarkerInstance instance{};
+        instance.position = glm::vec3(mercator.x, mercator.y, 0) * 10.0f;
+        instance.yearNormalized = yr;
+
+        points.push_back(instance);
     }
 
     return points;

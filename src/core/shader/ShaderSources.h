@@ -43,17 +43,20 @@ static constexpr const char* MARKER_VERTEX_SHADER_SOURCE = R"(
     #version 330 core
 
     layout(location = 0) in vec3 position;
-    layout (location = 1) in vec3 instancePosition;
+    layout(location = 1) in vec3 instancePosition;
+    layout(location = 2) in float yearNormalized;
 
     uniform mat4 lookAt;
     uniform mat4 projection;
     uniform mat4 model;
 
+    out float year;
     out vec3 fragp;
 
     void main() {
-        fragp = (model * vec4(position + instancePosition, 1.0)).xyz;
-        gl_Position = projection * lookAt * model * vec4(position + instancePosition, 1.0);
+        fragp = (model * vec4(position + vec3(instancePosition.x, instancePosition.y, 0.0), 1.0)).xyz;
+        year = yearNormalized;
+        gl_Position = projection * lookAt * model * vec4(position + vec3(instancePosition.x, instancePosition.y, 0.0), 1.0);
     }
 )";
 
@@ -62,11 +65,12 @@ static constexpr const char* MARKER_FRAGMENT_SHADER_SOURCE = R"(
 
     out vec4 fragc;
     in vec3 fragp;
+    in float year;
 
     uniform vec3 cameraDirection;
 
     void main() {
-        fragc = vec4(1.0);
+        fragc = vec4(year, 0.0, 0.0, 1.0);
     }
 )";
 
@@ -94,7 +98,7 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
     uniform sampler2D adminBorderTexture;
     uniform sampler2D internBorderTexture;
     uniform sampler2D countryPolygonsTexture;
-    uniform sampler2D acledMarkers;
+    uniform sampler2D ucdpMarkers;
 
     void main() {
         vec4 adminBorderColor = texture(adminBorderTexture, uv);
@@ -102,12 +106,20 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         //vec4 polygonColor = texture(countryPolygonsTexture, uv);
 
         vec3 background = vec3(16.0, 24.0, 28.0)/255.0 * 0.8;
-        vec4 acledM = texture(acledMarkers, uv);
+        vec4 ucdp = texture(ucdpMarkers, uv);
+
+        vec3 ucdpRecentColor = vec3(0.5, 1.0, 0.5);
+        vec3 ucdpPastColor = vec3(1.0, 0.0, 0.0);
+        float year = ucdp.a > 0.001 ? ucdp.r / ucdp.a : 0.0;
+
+        vec3 ucdpMarkerColor = mix(ucdpPastColor, ucdpRecentColor, year);
 
         vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 3.0, adminBorderColor.a * 0.2);
+        composite = mix(composite, ucdpMarkerColor, ucdp.a);
         composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 15.0, internBorderColor.a);
+
+
         //composite = mix(composite, polygonColor.rgb * 5.0, polygonColor.a);
-        composite = mix(composite, vec3(0.0, 1.0, 0.0), acledM.a);
 
         fragc = vec4(composite, 1.0);
     }

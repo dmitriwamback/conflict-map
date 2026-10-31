@@ -57,12 +57,10 @@ void MapRenderer::initializeGL() {
 
         std::string path = "/Users/dmitri/Documents/working/conflict map/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
 
-        std::vector<glm::vec3> coordinates = UCDP::GetConflictPoints(path.c_str());
+        std::vector<MarkerInstance> coordinates = UCDP::GetConflictPoints(path.c_str());
 
-        for (glm::vec3 m : coordinates) {
-            MarkerInstance mi{};
-            mi.position = m;
-            markers.push_back(mi);
+        for (MarkerInstance m : coordinates) {
+            markers.push_back(m);
         }
     }
 
@@ -211,7 +209,7 @@ void MapRenderer::RenderComposite() {
     compositeShader.SetInt("adminBorderTexture", 0);
     compositeShader.SetInt("internBorderTexture", 1);
     compositeShader.SetInt("countryPolygonsTexture", 2);
-    compositeShader.SetInt("acledMarkers", 3);
+    compositeShader.SetInt("ucdpMarkers", 3);
 
     composite.Render();
 }

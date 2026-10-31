@@ -9,6 +9,7 @@
 
 struct MarkerInstance {
     glm::vec3 position;
+    float yearNormalized;
 };
 
 class Marker {

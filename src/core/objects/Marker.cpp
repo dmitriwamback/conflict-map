@@ -68,8 +68,12 @@ void Marker::Initialize() {
     gl->glBindBuffer(GL_ARRAY_BUFFER, instanceBufferObject);
 
     gl->glEnableVertexAttribArray(1);
-    gl->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
+    gl->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(MarkerInstance), (void*)offsetof(MarkerInstance, position));
     gl->glVertexAttribDivisor(1, 1);
+
+    gl->glEnableVertexAttribArray(2);
+    gl->glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(MarkerInstance), (void*)offsetof(MarkerInstance, yearNormalized));
+    gl->glVertexAttribDivisor(2, 1);
 
     gl->glBindVertexArray(0);
 }
@@ -77,16 +81,11 @@ void Marker::Initialize() {
 void Marker::SetInstances(const std::vector<MarkerInstance>& instances) {
     this->instances = instances;
 
-    std::vector<glm::vec3> positions;
-
-    for (const auto& instance : instances) {
-        positions.push_back(instance.position);
-    }
-
     auto* gl = QOpenGLContext::currentContext()->extraFunctions();
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, instanceBufferObject);
-    gl->glBufferData(GL_ARRAY_BUFFER,positions.size() * sizeof(glm::vec3), positions.data(), GL_DYNAMIC_DRAW);
+    gl->glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instances.size() * sizeof(MarkerInstance)), instances.data(), GL_DYNAMIC_DRAW);
+    gl->glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Marker::Render() {
