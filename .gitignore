@@ -2,3 +2,5 @@ cmake-build-debug
 .DS_Store
 access_token.txt
 GEDEvent_v26_1.csv
+res/ucdp/*.json
+res/acled/*.json

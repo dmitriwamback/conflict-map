@@ -4,6 +4,7 @@
 
 #include "MapRenderer.h"
 
+#include <iostream>
 #include <glm/ext/matrix_transform.hpp>
 
 #include "../core/shader/ShaderSources.h"
@@ -11,6 +12,8 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QTimer>
+
+#include "../util/UCDP.h"
 
 MapRenderer::MapRenderer() {
     auto* timer = new QTimer(this);
@@ -21,31 +24,52 @@ MapRenderer::MapRenderer() {
 void MapRenderer::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     camera = Camera();
     administrativeBorderColorFramebuffer = ColorFramebuffer();
     internationalBorderColorFramebuffer = ColorFramebuffer();
+    acledMarkerColorFramebuffer = ColorFramebuffer();
 
     administrativeBorderColorFramebuffer.Initialize();
     internationalBorderColorFramebuffer.Initialize();
+    acledMarkerColorFramebuffer.Initialize();
 
     administrativeBorders = Borders();
-    administrativeBorders.Load("../res/admin1.geojson");
+    administrativeBorders.Load("/Users/dmitri/Documents/working/conflict map/res/admin1.geojson");
     administrativeBorders.Initialize();
 
     internationalBorders = Borders();
-    internationalBorders.Load("../res/world.geojson");
+    internationalBorders.Load("/Users/dmitri/Documents/working/conflict map/res/world.geojson");
     internationalBorders.Initialize();
 
     composite = Quad();
     composite.Initialize();
+
+    defaultMarker = Marker();
+    defaultMarker.Initialize();
+
+    std::vector<glm::vec3> coordinates = UCDP::GetConflictPoints("/Users/dmitri/Documents/working/conflict map/res/ucdp/GEDEvent_v26_1_17.json");
+
+    std::vector<MarkerInstance> markers;
+
+    for (glm::vec3 m : coordinates) {
+        MarkerInstance mi{};
+        mi.position = m;
+        markers.push_back(mi);
+    }
+
+    defaultMarker.SetInstances(markers);
 
     borderShader = Shader();
     borderShader.Create(BORDER_VERTEX_SHADER_SOURCE, BORDER_FRAGMENT_SHADER_SOURCE);
 
     compositeShader = Shader();
     compositeShader.Create(COMPOSITE_VERTEX_SHADER_SOURCE, COMPOSITE_FRAGMENT_SHADER_SOURCE);
+
+    markerShader = Shader();
+    markerShader.Create(MARKER_VERTEX_SHADER_SOURCE, MARKER_FRAGMENT_SHADER_SOURCE);
 }
 
 void MapRenderer::paintGL() {
@@ -55,6 +79,7 @@ void MapRenderer::paintGL() {
     camera.Update();
 
     RenderBorders();
+    RenderConflictMarkers();
     RenderComposite();
 }
 
@@ -64,6 +89,7 @@ void MapRenderer::resizeGL(int width, int height) {
 
     administrativeBorderColorFramebuffer.Update(width, height);
     internationalBorderColorFramebuffer.Update(width, height);
+    acledMarkerColorFramebuffer.Update(width, height);
 }
 
 void MapRenderer::mousePressEvent(QMouseEvent *event) {
@@ -136,6 +162,28 @@ void MapRenderer::RenderBorders() {
     internationalBorderColorFramebuffer.Unbind();
 }
 
+void MapRenderer::RenderConflictMarkers() {
+
+    glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
+    glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f));
+
+    markerShader.Bind();
+    markerShader.SetMat4("projection", projectionMatrix);
+    markerShader.SetMat4("lookAt", lookAtMatrix);
+    markerShader.SetMat4("model", model);
+    markerShader.SetVec3("cameraDirection", camera.GetDirection());
+
+    acledMarkerColorFramebuffer.Bind();
+
+    glViewport(0, 0, width(), height());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    defaultMarker.Render();
+
+    acledMarkerColorFramebuffer.Unbind();
+}
+
 void MapRenderer::RenderComposite() {
     const qreal dpr = devicePixelRatioF();
     glViewport(0, 0, static_cast<GLsizei>(width() * dpr), static_cast<GLsizei>(height() * dpr));
@@ -151,9 +199,13 @@ void MapRenderer::RenderComposite() {
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, countryPolygonsColorFramebuffer.GetTextureID());
 
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, acledMarkerColorFramebuffer.GetTextureID());
+
     compositeShader.SetInt("adminBorderTexture", 0);
     compositeShader.SetInt("internBorderTexture", 1);
     compositeShader.SetInt("countryPolygonsTexture", 2);
+    compositeShader.SetInt("acledMarkers", 3);
 
     composite.Render();
 }

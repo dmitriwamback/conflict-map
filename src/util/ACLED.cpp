@@ -3,3 +3,7 @@
 //
 
 #include "ACLED.h"
+
+std::vector<glm::vec3> ACLED::GetConflictPoints(const char *jsonPath) {
+    return std::vector<glm::vec3>();
+}

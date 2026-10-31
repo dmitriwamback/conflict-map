@@ -14,6 +14,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "../../util/Math.h"
+
 bool Borders::Load(const QString& path) {
     QFile file(path);
 
@@ -113,10 +115,9 @@ void Borders::ParseLineString(const QJsonArray& coordinates) {
         float lonRadians = coordinate[0].toDouble() * PI / 180.0;
 
         // mercator projection
-        float lon = lonRadians;
-        float lat = log(tan(PI/4.0f + latRadians/2.0f));
+        glm::vec2 coord = ToMercator(latRadians, lonRadians);
 
-        glm::vec3 position = glm::vec3(lon, lat, 0);
+        glm::vec3 position = glm::vec3(coord.x, coord.y, 0);
 
         line.vertices.push_back(position);
     }

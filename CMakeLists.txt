@@ -28,7 +28,12 @@ add_executable(conflict_map main.cpp
         src/core/objects/Camera.h
         src/core/shader/Shader.cpp
         src/core/shader/Shader.h
-        src/core/shader/ShaderSources.h)
+        src/core/shader/ShaderSources.h
+        src/util/UCDP.cpp
+        src/util/UCDP.h
+        src/core/objects/Marker.cpp
+        src/core/objects/Marker.h
+        src/util/Math.h)
 
 target_link_libraries(conflict_map PRIVATE
         Qt6::Widgets

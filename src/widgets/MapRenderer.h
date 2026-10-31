@@ -12,11 +12,13 @@
 #include "../core/framebuffer/Quad.h"
 #include "../core/objects/Borders.h"
 #include "../core/objects/Camera.h"
+#include "../core/objects/Marker.h"
 #include "../core/shader/Shader.h"
 
 class MapRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
 public:
     MapRenderer();
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -30,7 +32,9 @@ private:
     Borders internationalBorders, administrativeBorders;
     Quad composite;
 
-    Shader borderShader, compositeShader;
+    Marker defaultMarker;
+
+    Shader borderShader, compositeShader, markerShader;
 
     Camera camera;
     float aspectRatio = 1;
@@ -39,13 +43,17 @@ private:
     glm::mat4 earthTilt;
 
     void RenderBorders();
+    void RenderConflictMarkers();
     void RenderScene();
     void RenderCountryPolygons();
     void RenderComposite();
 
     QPoint lastMousePosition;
 
-    ColorFramebuffer administrativeBorderColorFramebuffer, internationalBorderColorFramebuffer, countryPolygonsColorFramebuffer;
+    ColorFramebuffer administrativeBorderColorFramebuffer,
+                     internationalBorderColorFramebuffer,
+                     countryPolygonsColorFramebuffer,
+                     acledMarkerColorFramebuffer;
 };
 
 
