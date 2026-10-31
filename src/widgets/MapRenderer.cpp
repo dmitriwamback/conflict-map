@@ -5,6 +5,7 @@
 #include "MapRenderer.h"
 
 #include <iostream>
+#include <string>
 #include <glm/ext/matrix_transform.hpp>
 
 #include "../core/shader/ShaderSources.h"
@@ -50,14 +51,19 @@ void MapRenderer::initializeGL() {
     defaultMarker = Marker();
     defaultMarker.Initialize();
 
-    std::vector<glm::vec3> coordinates = UCDP::GetConflictPoints("/Users/dmitri/Documents/working/conflict map/res/ucdp/GEDEvent_v26_1_17.json");
-
     std::vector<MarkerInstance> markers;
 
-    for (glm::vec3 m : coordinates) {
-        MarkerInstance mi{};
-        mi.position = m;
-        markers.push_back(mi);
+    for (int i = 0; i < 17; i++) {
+
+        std::string path = "/Users/dmitri/Documents/working/conflict map/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
+
+        std::vector<glm::vec3> coordinates = UCDP::GetConflictPoints(path.c_str());
+
+        for (glm::vec3 m : coordinates) {
+            MarkerInstance mi{};
+            mi.position = m;
+            markers.push_back(mi);
+        }
     }
 
     defaultMarker.SetInstances(markers);
