@@ -108,6 +108,9 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         vec3 background = vec3(16.0, 24.0, 28.0)/255.0 * 0.8;
         vec4 ucdp = texture(ucdpMarkers, uv);
 
+        vec3 acledRecentColor = vec3(0.1, 0.3, 1.0);
+        vec3 acledPastColor = vec3(1.0, 0.5, 1.0);
+
         vec3 ucdpRecentColor = vec3(0.5, 1.0, 0.5);
         vec3 ucdpPastColor = vec3(1.0, 0.0, 0.0);
         float year = ucdp.a > 0.001 ? ucdp.r / ucdp.a : 0.0;
