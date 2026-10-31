@@ -1,2 +1,4 @@
 cmake-build-debug
 .DS_Store
+access_token.txt
+GEDEvent_v26_1.csv
