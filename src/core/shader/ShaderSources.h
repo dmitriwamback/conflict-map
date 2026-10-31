@@ -107,7 +107,7 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 3.0, adminBorderColor.a * 0.2);
         composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 15.0, internBorderColor.a);
         //composite = mix(composite, polygonColor.rgb * 5.0, polygonColor.a);
-        composite = mix(composite, vec3(1.0, 0.0, 0.0), acledM.a);
+        composite = mix(composite, vec3(0.0, 1.0, 0.0), acledM.a);
 
         fragc = vec4(composite, 1.0);
     }

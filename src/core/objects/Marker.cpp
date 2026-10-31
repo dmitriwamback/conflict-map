@@ -12,7 +12,7 @@
 void Marker::Initialize() {
 
     // Octagon Shape
-    float sideLength = 0.015f;
+    float sideLength = 0.0015f;
     float offset = sideLength/2.0f;
     float perpTriangleSideLength = sideLength/sqrt(2.0f);
 
