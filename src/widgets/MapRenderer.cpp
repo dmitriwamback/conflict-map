@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <glm/ext/matrix_transform.hpp>
 
 #include "../core/shader/ShaderSources.h"
@@ -77,6 +78,7 @@ void MapRenderer::initializeGL() {
     std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/ACLED Data_2026-10-31_event_date_from_2026-01-01_event_date_to_2026-10-25.json";
 
     std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
+    std::reverse(coordinates.begin(), coordinates.end());
 
     acledMarker.SetInstances(coordinates);
 

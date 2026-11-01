@@ -52,6 +52,18 @@ for (int i = 0; i < 17; i++) {
 }
 ```
 
+```c++
+acledMarker = Marker();
+acledMarker.Initialize();
+
+std::string path = "<path>/res/acled/ACLED Data_2026-10-31_event_date_from_2026-01-01_event_date_to_2026-10-25.json";
+
+std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
+std::reverse(coordinates.begin(), coordinates.end());
+
+acledMarker.SetInstances(coordinates);
+```
+
 Afterwards, build the application with <code>cmake</code> to run the app and see the map of archived conflict points.
 
 ```shell
