@@ -98,4 +98,13 @@ void ColorFramebuffer::Update(int width, int height) {
 
     gl->glBindTexture(GL_TEXTURE_2D, 0);
     gl->glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    gl->glBindRenderbuffer(GL_RENDERBUFFER, msaaColorBufferID);
+
+    gl->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, width, height);
+
+    gl->glBindRenderbuffer(GL_RENDERBUFFER, msaaDepthbufferID);
+    gl->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT24, width, height);
+    gl->glBindTexture(GL_TEXTURE_2D, 0);
+    gl->glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }

@@ -14,6 +14,7 @@
 #include <QWheelEvent>
 #include <QTimer>
 
+#include "../util/ACLED.h"
 #include "../util/UCDP.h"
 
 MapRenderer::MapRenderer() {
@@ -32,10 +33,12 @@ void MapRenderer::initializeGL() {
     administrativeBorderColorFramebuffer = ColorFramebuffer();
     internationalBorderColorFramebuffer = ColorFramebuffer();
     acledMarkerColorFramebuffer = ColorFramebuffer();
+    ucdpMarkersColorFramebuffer = ColorFramebuffer();
 
     administrativeBorderColorFramebuffer.Initialize();
     internationalBorderColorFramebuffer.Initialize();
     acledMarkerColorFramebuffer.Initialize();
+    ucdpMarkersColorFramebuffer.Initialize();
 
     administrativeBorders = Borders();
     administrativeBorders.Load("/Users/dmitri/Documents/working/conflict map/res/admin1.geojson");
@@ -48,8 +51,8 @@ void MapRenderer::initializeGL() {
     composite = Quad();
     composite.Initialize();
 
-    defaultMarker = Marker();
-    defaultMarker.Initialize();
+    ucdpMarker = Marker();
+    ucdpMarker.Initialize();
 
     std::vector<MarkerInstance> markers;
 
@@ -64,7 +67,18 @@ void MapRenderer::initializeGL() {
         }
     }
 
-    defaultMarker.SetInstances(markers);
+    std::reverse(markers.begin(), markers.end());
+
+    ucdpMarker.SetInstances(markers);
+
+    acledMarker = Marker();
+    acledMarker.Initialize();
+
+    std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/ACLED Data_2026-10-31_event_date_from_2026-01-01_event_date_to_2026-10-25.json";
+
+    std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
+
+    acledMarker.SetInstances(coordinates);
 
     borderShader = Shader();
     borderShader.Create(BORDER_VERTEX_SHADER_SOURCE, BORDER_FRAGMENT_SHADER_SOURCE);
@@ -88,12 +102,20 @@ void MapRenderer::paintGL() {
 }
 
 void MapRenderer::resizeGL(int width, int height) {
-    aspectRatio = (float)width / (float)height;
-    glViewport(0, 0, width, height);
 
-    administrativeBorderColorFramebuffer.Update(width, height);
-    internationalBorderColorFramebuffer.Update(width, height);
-    acledMarkerColorFramebuffer.Update(width, height);
+    const qreal dpr = devicePixelRatioF();
+
+    int pixelWidth = qRound(width * dpr);
+    int pixelHeight = qRound(height * dpr);
+
+
+    aspectRatio = (float)width / (float)height;
+    glViewport(0, 0, pixelWidth, pixelHeight);
+
+    administrativeBorderColorFramebuffer.Update(pixelWidth, pixelHeight);
+    internationalBorderColorFramebuffer.Update(pixelWidth, pixelHeight);
+    acledMarkerColorFramebuffer.Update(pixelWidth, pixelHeight);
+    ucdpMarkersColorFramebuffer.Update(pixelWidth, pixelHeight);
 }
 
 void MapRenderer::mousePressEvent(QMouseEvent *event) {
@@ -143,9 +165,12 @@ void MapRenderer::RenderBorders() {
     borderShader.SetMat4("model", model);
     borderShader.SetVec3("cameraDirection", camera.GetDirection());
 
+    int pixelWidth = qRound(width() * devicePixelRatioF());
+    int pixelHeight = qRound(height() * devicePixelRatioF());
+
     administrativeBorderColorFramebuffer.Bind();
 
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, pixelWidth, pixelHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -157,7 +182,7 @@ void MapRenderer::RenderBorders() {
 
     internationalBorderColorFramebuffer.Bind();
 
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, pixelWidth, pixelHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -178,12 +203,24 @@ void MapRenderer::RenderConflictMarkers() {
     markerShader.SetMat4("model", model);
     markerShader.SetVec3("cameraDirection", camera.GetDirection());
 
-    acledMarkerColorFramebuffer.Bind();
+    int pixelWidth = qRound(width() * devicePixelRatioF());
+    int pixelHeight = qRound(height() * devicePixelRatioF());
 
-    glViewport(0, 0, width(), height());
+    ucdpMarkersColorFramebuffer.Bind();
+
+    glViewport(0, 0, pixelWidth, pixelHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    defaultMarker.Render();
+    ucdpMarker.Render();
+
+    ucdpMarkersColorFramebuffer.Unbind();
+
+    acledMarkerColorFramebuffer.Bind();
+
+    glViewport(0, 0, pixelWidth, pixelHeight);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    acledMarker.Render();
 
     acledMarkerColorFramebuffer.Unbind();
 }
@@ -204,12 +241,16 @@ void MapRenderer::RenderComposite() {
     glBindTexture(GL_TEXTURE_2D, countryPolygonsColorFramebuffer.GetTextureID());
 
     glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, ucdpMarkersColorFramebuffer.GetTextureID());
+
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, acledMarkerColorFramebuffer.GetTextureID());
 
     compositeShader.SetInt("adminBorderTexture", 0);
     compositeShader.SetInt("internBorderTexture", 1);
     compositeShader.SetInt("countryPolygonsTexture", 2);
     compositeShader.SetInt("ucdpMarkers", 3);
+    compositeShader.SetInt("acledMarkers", 4);
 
     composite.Render();
 }

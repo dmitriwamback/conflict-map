@@ -32,7 +32,7 @@ private:
     Borders internationalBorders, administrativeBorders;
     Quad composite;
 
-    Marker defaultMarker;
+    Marker ucdpMarker, acledMarker;
 
     Shader borderShader, compositeShader, markerShader;
 
@@ -53,6 +53,7 @@ private:
     ColorFramebuffer administrativeBorderColorFramebuffer,
                      internationalBorderColorFramebuffer,
                      countryPolygonsColorFramebuffer,
+                     ucdpMarkersColorFramebuffer,
                      acledMarkerColorFramebuffer;
 };
 
