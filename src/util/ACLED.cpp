@@ -59,7 +59,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
         float latRad = ToRadians(latitude);
         float longRad = ToRadians(longitude);
 
-        glm::vec2 mercator = ToMercator(latRad, longRad);
+        glm::vec2 mercator = Project(latRad, longRad);
 
         MarkerInstance instance{};
 

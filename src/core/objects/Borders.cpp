@@ -115,7 +115,7 @@ void Borders::ParseLineString(const QJsonArray& coordinates) {
         float lonRadians = coordinate[0].toDouble() * PI / 180.0;
 
         // mercator projection
-        glm::vec2 coord = ToMercator(latRadians, lonRadians);
+        glm::vec2 coord = Project(latRadians, lonRadians);
 
         glm::vec3 position = glm::vec3(coord.x, coord.y, 0);
 

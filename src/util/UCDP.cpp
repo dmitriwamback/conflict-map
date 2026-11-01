@@ -52,7 +52,7 @@ std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
 
         float latRad = ToRadians(latitude);
         float longRad = ToRadians(longitude);
-        glm::vec2 mercator = ToMercator(latRad, longRad);
+        glm::vec2 mercator = Project(latRad, longRad);
 
         MarkerInstance instance{};
         instance.position = glm::vec3(mercator.x, mercator.y, 0) * 10.0f;
