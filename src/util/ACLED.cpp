@@ -57,7 +57,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
 
     QJsonArray events = root["data"].toArray();
 
-    int minYear = 2025;
+    int minYear = 2024;
     int maxYear = 2025;
 
     if (minYear == INT_MAX) {
@@ -92,7 +92,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
             continue;
         }
 
-        float yearNormalized = delta > 0.0f ? (maxYear - static_cast<float>(date.year())) / delta : 0.0f;
+        float yearNormalized = delta > 0.0f ? (static_cast<float>(date.year()) - minYear) / delta : 0.0f;
 
         float latRad = ToRadians(latitude);
         float longRad = ToRadians(longitude);
