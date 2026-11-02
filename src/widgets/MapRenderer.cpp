@@ -72,7 +72,6 @@ void MapRenderer::initializeGL() {
             ucdpMarkers.push_back(m);
         }
     }
-
     std::reverse(ucdpMarkers.begin(), ucdpMarkers.end());
 
     ucdpMarker.SetInstances(ucdpMarkers);
