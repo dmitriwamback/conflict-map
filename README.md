@@ -76,8 +76,6 @@ cmake --build .
 
 <p>*UCDP data will show colors between red and green, and ACLED data will show colors between blue and purple.</p>
 
-<img width="1189" height="782" alt="Image" src="https://github.com/user-attachments/assets/62c0fc37-2eae-41c9-a407-876e74997d72" />
-
 ---
 
 ### Sample Data over Afghanistan + Pakistan - November 1, 2026 (UCDP)
@@ -89,3 +87,9 @@ cmake --build .
 ### Sample Data over Myanmar - November 2, 2026 (UCDP and ACLED)
 
 <img width="1511" height="914" alt="Image" src="https://github.com/user-attachments/assets/c8d39f8f-f441-4ee8-90a9-0e42244e64c5" />
+
+---
+
+### Sample Data over the Sahel
+
+<img width="1511" height="919" alt="Image" src="https://github.com/user-attachments/assets/761824b4-844b-4c0f-859b-6b16a9d5e270" />
