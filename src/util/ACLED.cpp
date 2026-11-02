@@ -82,11 +82,8 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
         bool latitudeOk = false;
         bool longitudeOk = false;
 
-        double latitude = event["latitude"].toString()
-                              .toDouble(&latitudeOk);
-
-        double longitude = event["longitude"].toString()
-                               .toDouble(&longitudeOk);
+        double latitude = event["latitude"].toString().toDouble(&latitudeOk);
+        double longitude = event["longitude"].toString().toDouble(&longitudeOk);
 
         if (!latitudeOk || !longitudeOk)
             continue;
@@ -95,9 +92,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
             continue;
         }
 
-        float yearNormalized = delta > 0.0f
-            ? (maxYear - static_cast<float>(date.year())) / delta
-            : 0.0f;
+        float yearNormalized = delta > 0.0f ? (maxYear - static_cast<float>(date.year())) / delta : 0.0f;
 
         float latRad = ToRadians(latitude);
         float longRad = ToRadians(longitude);
@@ -105,13 +100,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
         glm::vec2 mercator = Project(latRad, longRad);
 
         MarkerInstance instance{};
-
-        instance.position = glm::vec3(
-            mercator.x,
-            mercator.y,
-            0.0f
-        ) * 10.0f;
-
+        instance.position = glm::vec3(mercator.x, mercator.y, 0.0f) * 10.0f;
         instance.yearNormalized = yearNormalized;
 
         points.push_back(instance);
