@@ -7,9 +7,7 @@
 
 ## Running
 
-<p>Before running, the csv files in res/acled and res/ucdp must be converted into json files.</p>
-
-<p>For each of the sources, run these commands</p>
+<p>Before running, the csv files in res/ucdp must be converted into json files.</p>
 
 <p>UCDP:</p>
 
@@ -18,14 +16,9 @@ cd res/ucdp
 python3 csv_to_json.py
 ```
 
-<p>ACLED:</p>
-
-```shell
-cd res/acled
-python3 csv_to_json.py
-```
-
 *Be sure to have the pandas library before running these scripts. Otherwise, they will fail to convert the CSVs into JSON files.
+
+(ACLED data has alread been pre split)
 
 <p>Additionally, in <code>src/widgets/MapRenderer.cpp</code>, the paths for loading geojsons and the conflict data have to be changed too.</p>
 
@@ -56,7 +49,7 @@ for (int i = 0; i < 17; i++) {
 acledMarker = Marker();
 acledMarker.Initialize();
 
-std::string path = "<path>/res/acled/ACLED Data_2026-10-31_event_date_from_2026-01-01_event_date_to_2026-10-25.json";
+std::string path = "<path>/res/acled/acled_data.json";
 
 std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
 std::reverse(coordinates.begin(), coordinates.end());

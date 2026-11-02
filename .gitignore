@@ -3,4 +3,4 @@ cmake-build-debug
 access_token.txt
 GEDEvent_v26_1.csv
 res/ucdp/*.json
-res/acled/*.json
+res/acled/acled_data.json

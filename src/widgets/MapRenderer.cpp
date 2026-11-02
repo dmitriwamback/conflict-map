@@ -59,7 +59,8 @@ void MapRenderer::initializeGL() {
     ucdpMarker = Marker();
     ucdpMarker.Initialize();
 
-    std::vector<MarkerInstance> markers;
+    std::vector<MarkerInstance> ucdpMarkers;
+    std::vector<MarkerInstance> acledMarkers;
 
     for (int i = 0; i < 17; i++) {
 
@@ -68,23 +69,28 @@ void MapRenderer::initializeGL() {
         std::vector<MarkerInstance> coordinates = UCDP::GetConflictPoints(path.c_str());
 
         for (MarkerInstance m : coordinates) {
-            markers.push_back(m);
+            ucdpMarkers.push_back(m);
         }
     }
 
-    std::reverse(markers.begin(), markers.end());
+    std::reverse(ucdpMarkers.begin(), ucdpMarkers.end());
 
-    ucdpMarker.SetInstances(markers);
+    ucdpMarker.SetInstances(ucdpMarkers);
 
     acledMarker = Marker();
     acledMarker.Initialize();
 
-    std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/ACLED Data_2026-10-31_event_date_from_2026-01-01_event_date_to_2026-10-25.json";
+    for (int i = 0; i < 3; i++) {
+        std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/acled_data_" + std::to_string(i+1) + ".json";
+        std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
 
-    std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
-    std::reverse(coordinates.begin(), coordinates.end());
+        for (MarkerInstance m : coordinates) {
+            acledMarkers.push_back(m);
+        }
+    }
+    std::reverse(acledMarkers.begin(), acledMarkers.end());
 
-    acledMarker.SetInstances(coordinates);
+    acledMarker.SetInstances(acledMarkers);
 
     borderShader = Shader();
     borderShader.Create(BORDER_VERTEX_SHADER_SOURCE, BORDER_FRAGMENT_SHADER_SOURCE);

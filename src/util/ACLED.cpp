@@ -1,19 +1,20 @@
-//
-// Created by Dmitri on 2026-10-30.
-//
 
 #include "ACLED.h"
 
 #include <iostream>
+#include <algorithm>
+#include <climits>
+
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonParseError>
 #include <QDebug>
 #include <QDate>
-#include "Math.h"
 
+#include "Math.h"
 #include "../core/objects/Marker.h"
 
 std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
@@ -26,35 +27,77 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
         return points;
     }
 
-    float acledMaxYear = 2025.0f;
-    float acledMinYear = 1989.0f;
-    float delta = acledMaxYear - acledMinYear;
+    // Read and parse JSON
+    QByteArray json = file.readAll();
 
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(json, &error);
 
-    if (!doc.isArray()) {
-        qDebug() << "Invalid ACLED JSON: expected an array";
+    if (error.error != QJsonParseError::NoError) {
+        qDebug() << "JSON parsing error:" << error.errorString();
         return points;
     }
 
-    QJsonArray events = doc.array();
+    if (!doc.isObject()) {
+        qDebug() << "Invalid ACLED JSON: expected an object";
+        return points;
+    }
+
+    QJsonObject root = doc.object();
+
+    if (!root["success"].toBool()) {
+        qDebug() << "ACLED API request was unsuccessful";
+        return points;
+    }
+
+    if (!root["data"].isArray()) {
+        qDebug() << "Invalid ACLED JSON: expected data array";
+        return points;
+    }
+
+    QJsonArray events = root["data"].toArray();
+
+    int minYear = 2025;
+    int maxYear = 2025;
+
+    if (minYear == INT_MAX) {
+        qDebug() << "No valid ACLED event dates";
+        return points;
+    }
+
+    float delta = static_cast<float>(maxYear - minYear);
 
     for (const QJsonValue& value : events) {
+
         QJsonObject event = value.toObject();
 
-        QString week = event["week"].toString();
-        QDate date = QDate::fromString(week, Qt::ISODate);
+        QDate date = QDate::fromString(
+            event["event_date"].toString(),
+            Qt::ISODate
+        );
 
-        if (!date.isValid()) {
+        if (!date.isValid())
+            continue;
+
+        bool latitudeOk = false;
+        bool longitudeOk = false;
+
+        double latitude = event["latitude"].toString()
+                              .toDouble(&latitudeOk);
+
+        double longitude = event["longitude"].toString()
+                               .toDouble(&longitudeOk);
+
+        if (!latitudeOk || !longitudeOk)
+            continue;
+
+        if (latitude < -90.0 || latitude > 90.0 || longitude < -180.0 || longitude > 180.0) {
             continue;
         }
 
-        int year = date.year();
-
-        float yr = (acledMaxYear - static_cast<float>(year)) / delta;
-
-        double latitude = event["centroid_latitude"].toDouble();
-        double longitude = event["centroid_longitude"].toDouble();
+        float yearNormalized = delta > 0.0f
+            ? (maxYear - static_cast<float>(date.year())) / delta
+            : 0.0f;
 
         float latRad = ToRadians(latitude);
         float longRad = ToRadians(longitude);
@@ -63,14 +106,16 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
 
         MarkerInstance instance{};
 
-        instance.position = glm::vec3(mercator.x, mercator.y, 0.0f) * 10.0f;
+        instance.position = glm::vec3(
+            mercator.x,
+            mercator.y,
+            0.0f
+        ) * 10.0f;
 
-        instance.yearNormalized = yr;
+        instance.yearNormalized = yearNormalized;
 
         points.push_back(instance);
     }
-
-    std::cout << points.size() << std::endl;
 
     return points;
 }

@@ -5,10 +5,9 @@ with open("access_token.txt") as f:
 
 parameters = {
     "_format": "json",
-    "country": "Georgia:OR:country=Armenia:OR:country=Azerbaijan",
-    "year": 2021,
-    "fields": "event_id_cnty|event_date|event_type|country|fatalities",
-    "limit": 10,
+    "year": 2025,
+    "fields": "event_id_cnty|event_date|event_type|country|fatalities|longitude|latitude",
+    "limit": 500000,
 }
 
 r = requests.get(
@@ -20,4 +19,5 @@ r = requests.get(
 # if access is denied, you can download the data directly from the ACLED website: https://acleddata.com/conflict-data/data-export-tool
 
 print(r.status_code)
-print(r.text[:500])
+with open("acled_data.json", "w") as f:
+    f.write(f'[{r.text}]')
