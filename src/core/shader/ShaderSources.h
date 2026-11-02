@@ -106,7 +106,7 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         vec4 internBorderColor = texture(internBorderTexture, uv);
         //vec4 polygonColor = texture(countryPolygonsTexture, uv);
 
-        vec3 background = vec3(16.0, 24.0, 28.0)/255.0 * 0.8;
+        vec3 background = vec3(16.0, 24.0, 28.0)/255.0 * 0.7;
         vec4 ucdp = texture(ucdpMarkers, uv);
         vec4 acled = texture(acledMarkers, uv);
 

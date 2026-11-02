@@ -14,11 +14,15 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QTimer>
+#include <QToolTip>
 
 #include "../util/ACLED.h"
 #include "../util/UCDP.h"
 
 MapRenderer::MapRenderer() {
+
+    setMouseTracking(true);
+
     auto* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&MapRenderer::update));
     timer->start(16);
@@ -127,6 +131,11 @@ void MapRenderer::mousePressEvent(QMouseEvent *event) {
 }
 
 void MapRenderer::mouseMoveEvent(QMouseEvent *event) {
+
+    if (camera.GetDistance() < 100) {
+        //UpdateHoveredMarkers(event->pos());
+    }
+
     if (!(event->buttons() & Qt::LeftButton)) {
         return;
     }
@@ -257,4 +266,103 @@ void MapRenderer::RenderComposite() {
     composite.Render();
 }
 
+QPointF MapRenderer::ProjectToScreen(const glm::vec3& position, const glm::mat4& projection, const glm::mat4& view, const glm::mat4& model) {
+    glm::vec4 clip = projection * view * model * glm::vec4(position, 1.0f);
 
+    if (clip.w <= 0.0f) return QPointF(-10000.0, -10000.0);
+
+    glm::vec3 ndc = glm::vec3(clip) / clip.w;
+
+    double screenX = (ndc.x + 1.0) * 0.5 * width();
+    double screenY = (1.0 - ndc.y) * 0.5 * height();
+
+    return QPointF(screenX, screenY);
+}
+
+void MapRenderer::UpdateHoveredMarkers(const QPoint& mousePosition) {
+
+    if (tooltipFrozen) return;
+    hoveredMarkers.clear();
+
+    glm::mat4 projection = camera.GetProjectionMatrix(aspectRatio);
+    glm::mat4 view = camera.GetLookAtMatrix();
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(50.0f));
+
+    constexpr float hoverRadius = 12.0f;
+    constexpr float hoverRadiusSquared = hoverRadius * hoverRadius;
+
+    auto checkMarkers = [&](const std::vector<MarkerInstance>& instances, const QString& source) {
+
+        for (size_t i = 0; i < instances.size(); i++) {
+            const MarkerInstance& marker = instances[i];
+
+            QPointF screenPosition = ProjectToScreen(
+                marker.position,
+                projection,
+                view,
+                model
+            );
+
+            float dx = static_cast<float>(
+                screenPosition.x() - mousePosition.x()
+            );
+
+            float dy = static_cast<float>(
+                screenPosition.y() - mousePosition.y()
+            );
+
+            float distanceSquared = dx * dx + dy * dy;
+
+            if (distanceSquared <= hoverRadiusSquared && hoveredMarkers.size() < 5) {
+                hoveredMarkers.push_back({
+                    source,
+                    i,
+                    distanceSquared,
+                    marker.yearNormalized
+                });
+            }
+        }
+    };
+
+    checkMarkers(ucdpMarker.GetInstances(), "UCDP");
+    checkMarkers(acledMarker.GetInstances(), "ACLED");
+
+    // Closest marker appears first.
+    std::sort(
+        hoveredMarkers.begin(),
+        hoveredMarkers.end(),
+        [](const HoveredMarker& a, const HoveredMarker& b) {
+            return a.distanceSquared < b.distanceSquared;
+        }
+    );
+
+    if (hoveredMarkers.empty()) {
+        currentTooltip.clear();
+        QToolTip::hideText();
+        return;
+    }
+
+    currentTooltip = BuildTooltipText();
+
+    QToolTip::showText(
+        mapToGlobal(mousePosition + QPoint(15, 15)),
+        currentTooltip,
+        this
+    );
+}
+
+QString MapRenderer::BuildTooltipText() const {
+    QString text;
+
+    for (const HoveredMarker& marker : hoveredMarkers) {
+        text += QString(
+            "%1 | Marker #%2\n"
+            "Normalized year: %3\n\n"
+        )
+        .arg(marker.source)
+        .arg(marker.index)
+        .arg(marker.yearNormalized, 0, 'f', 3);
+    }
+
+    return text.trimmed();
+}

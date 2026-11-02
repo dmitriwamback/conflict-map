@@ -7,6 +7,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
+#include <QPointF>
 
 #include "../core/framebuffer/ColorFramebuffer.h"
 #include "../core/framebuffer/Quad.h"
@@ -40,6 +41,11 @@ private:
     float aspectRatio = 1;
     float debugRotation = 0.0f;
 
+    bool tooltipFrozen;
+    QString currentTooltip;
+
+    std::vector<HoveredMarker> hoveredMarkers;
+
     glm::mat4 earthTilt;
 
     void RenderBorders();
@@ -47,6 +53,10 @@ private:
     void RenderScene();
     void RenderCountryPolygons();
     void RenderComposite();
+
+    QPointF ProjectToScreen(const glm::vec3& position, const glm::mat4& projection, const glm::mat4& view, const glm::mat4& model);
+    void UpdateHoveredMarkers(const QPoint& mousePosition);
+    QString BuildTooltipText() const;
 
     QPoint lastMousePosition;
 

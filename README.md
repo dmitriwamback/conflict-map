@@ -94,3 +94,9 @@ cmake --build .
 <p>*UCDP data will show colors between red and green, and ACLED data will show colors between blue and purple.</p>
 
 <img width="1189" height="782" alt="Image" src="https://github.com/user-attachments/assets/62c0fc37-2eae-41c9-a407-876e74997d72" />
+
+---
+
+### Sample Data over Afghanistan + Pakistan - November 1, 2026
+
+<img width="1510" height="907" alt="Image" src="https://github.com/user-attachments/assets/a2f6ad38-3e09-48d2-acc1-213d4c91448b" />

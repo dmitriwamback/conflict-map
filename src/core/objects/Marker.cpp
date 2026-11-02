@@ -95,3 +95,7 @@ void Marker::Render() {
     gl->glDrawArraysInstanced(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()), static_cast<GLsizei>(instances.size()));
     gl->glBindVertexArray(0);
 }
+
+std::vector<MarkerInstance> Marker::GetInstances() {
+    return instances;
+}
