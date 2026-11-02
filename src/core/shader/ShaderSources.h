@@ -110,21 +110,21 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         vec4 ucdp = texture(ucdpMarkers, uv);
         vec4 acled = texture(acledMarkers, uv);
 
-        vec3 acledRecentColor = vec3(0.1, 0.3, 1.0);
-        vec3 acledPastColor = vec3(1.0, 0.5, 1.0);
+        vec3 acledRecentColor = vec3(0.1, 0.5, 1.0);
+        vec3 acledPastColor = vec3(0.0, 1.0, 1.0);
 
         vec3 ucdpRecentColor = vec3(0.5, 1.0, 0.5);
-        vec3 ucdpPastColor = vec3(1.0, 0.0, 0.0);
+        vec3 ucdpPastColor = vec3(1.0, 0.0, 1.0);
         float ucdpYear = ucdp.a > 0.001 ? ucdp.r / ucdp.a : 0.0;
         float acledYear = acled.a > 0.001 ? acled.r / acled.a : 0.0;
 
         vec3 ucdpMarkerColor = mix(ucdpPastColor, ucdpRecentColor, ucdpYear);
         vec3 acledMarkerColor = mix(acledPastColor, acledRecentColor, acledYear);
 
-        vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 3.0, adminBorderColor.a * 0.2);
+        vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 1.25, adminBorderColor.a * 0.2);
         composite = mix(composite, ucdpMarkerColor, ucdp.a);
         composite = mix(composite, acledMarkerColor, acled.a);
-        composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 15.0, internBorderColor.a);
+        composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 2, internBorderColor.a * 10);
 
 
         //composite = mix(composite, polygonColor.rgb * 5.0, polygonColor.a);

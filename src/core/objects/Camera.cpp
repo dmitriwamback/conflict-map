@@ -9,13 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera() {
-    position = glm::vec3(0.0f, 0.0f, ZOOM_MAX);
+    position = glm::vec3(170.119, 110.85, 330);
     lookAt = glm::vec3(0.0f, 0.0f, -1.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
 
     yaw = 0.0f;
     pitch = 0.0f;
-    distance = ZOOM_MAX;
+    distance = 330;
 }
 
 void Camera::Update() {
@@ -53,7 +53,6 @@ void Camera::Move(float deltaX, float deltaY) {
 
     position.x += deltaX * 500;
     position.y += deltaY * 500;
-
     Update();
 }
 
