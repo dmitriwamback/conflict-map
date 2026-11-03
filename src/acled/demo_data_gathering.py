@@ -5,7 +5,7 @@ with open("access_token.txt") as f:
 
 parameters = {
     "_format": "json",
-    "year": 2025,
+    "year": 2023,
     "fields": "event_id_cnty|event_date|event_type|country|fatalities|longitude|latitude",
     "limit": 500000,
 }

@@ -57,7 +57,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
 
     QJsonArray events = root["data"].toArray();
 
-    int minYear = 20250101;
+    int minYear = 20230101;
     int maxYear = 20251102;
 
     if (minYear == INT_MAX) {
