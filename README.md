@@ -80,18 +80,24 @@ cmake --build .
 
 ---
 
-### Sample Data over Afghanistan + Pakistan - November 1, 2026 (UCDP)
+### Data over Afghanistan + Pakistan - November 1, 2026 (UCDP)
 
 <img width="1510" height="907" alt="Image" src="https://github.com/user-attachments/assets/a2f6ad38-3e09-48d2-acc1-213d4c91448b" />
 
 ---
 
-### Sample Data over Myanmar - November 2, 2026 (UCDP and ACLED)
+### Data over Myanmar - November 2, 2026 (UCDP and ACLED)
 
 <img width="1511" height="914" alt="Image" src="https://github.com/user-attachments/assets/c8d39f8f-f441-4ee8-90a9-0e42244e64c5" />
 
 ---
 
-### Sample Data over the Sahel
+### Data over the Sahel
 
 <img width="1511" height="919" alt="Image" src="https://github.com/user-attachments/assets/761824b4-844b-4c0f-859b-6b16a9d5e270" />
+
+---
+
+### Data over Central and South America - November 3, 2026
+
+<img width="1512" height="917" alt="Image" src="https://github.com/user-attachments/assets/2e806e9b-2804-4622-b65d-4f2b2f09ed18" />
