@@ -27,7 +27,7 @@ std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
         return std::vector<MarkerInstance>();
     }
 
-    int ucdpMaxYear = 20251231;
+    int ucdpMaxYear = 20260814;
     int ucdpMinYear = 19890101;
 
     float delta = static_cast<float>(ucdpMaxYear - ucdpMinYear);
@@ -58,6 +58,7 @@ std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
         MarkerInstance instance{};
         instance.position = glm::vec3(mercator.x, mercator.y, 0) * 10.0f;
         instance.yearNormalized = yr;
+        instance.year = date.year();
 
         points.push_back(instance);
     }

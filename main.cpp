@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
             height: 20px;
         }
     )");
-    filterWidget->setFixedSize(250, 100);
+    filterWidget->setFixedSize(260, 180);
 
     std::string ACLEDMarkerCount = std::to_string(mapViewer->GetACLEDMarkerCount());
     std::string UCDPMarkerCount = std::to_string(mapViewer->GetUCDPMarkerCount());
@@ -72,6 +72,16 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(filterWidget, &DatasetFilterWidget::UCDPVisibilityChanged, mapViewer, &MapRenderer::SetUCDPVisibility);
     QObject::connect(filterWidget, &DatasetFilterWidget::ACLEDVisibilityChanged, mapViewer, &MapRenderer::SetACLEDVisibility);
+
+    QObject::connect(filterWidget->GetDateRangeWidget(),
+        &DateRangeWidget::MinYearChanged,
+        mapViewer,
+        &MapRenderer::SetMinYearFilter);
+
+    QObject::connect(filterWidget->GetDateRangeWidget(),
+            &DateRangeWidget::MaxYearChanged,
+            mapViewer,
+            &MapRenderer::SetMaxYearFilter);
 
     window.show();
 

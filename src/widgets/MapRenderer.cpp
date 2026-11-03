@@ -34,7 +34,7 @@ MapRenderer::MapRenderer() {
     std::vector<MarkerInstance> ucdpMarkers;
     std::vector<MarkerInstance> acledMarkers;
 
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0; i < 18; i++) {
 
         std::string path = std::string(RESOURCE_PATH) + "/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
 
@@ -243,6 +243,9 @@ void MapRenderer::RenderConflictMarkers() {
     markerShader.SetMat4("model", model);
     markerShader.SetVec3("cameraDirection", camera.GetDirection());
 
+    markerShader.SetInt("maxYearFilter", maxYearFilter);
+    markerShader.SetInt("minYearFilter", minYearFilter);
+
     int pixelWidth = qRound(width() * devicePixelRatioF());
     int pixelHeight = qRound(height() * devicePixelRatioF());
 
@@ -406,6 +409,14 @@ void MapRenderer::SetACLEDVisibility(bool visible) {
 
 void MapRenderer::SetUCDPVisibility(bool visible) {
     useUCDPData = visible;
+}
+
+void MapRenderer::SetMaxYearFilter(int year) {
+    maxYearFilter = year;
+}
+
+void MapRenderer::SetMinYearFilter(int year) {
+    minYearFilter = year;
 }
 
 int MapRenderer::GetUCDPMarkerCount() {

@@ -75,6 +75,10 @@ void Marker::Initialize() {
     gl->glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(MarkerInstance), (void*)offsetof(MarkerInstance, yearNormalized));
     gl->glVertexAttribDivisor(2, 1);
 
+    gl->glEnableVertexAttribArray(3);
+    gl->glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, sizeof(MarkerInstance), (void*)offsetof(MarkerInstance, year));
+    gl->glVertexAttribDivisor(3, 1);
+
     gl->glBindVertexArray(0);
 }
 

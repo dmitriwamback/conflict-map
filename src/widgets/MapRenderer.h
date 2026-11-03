@@ -26,6 +26,9 @@ public:
     int GetUCDPMarkerCount();
     int GetACLEDMarkerCount();
 
+    void SetMaxYearFilter(int year);
+    void SetMinYearFilter(int year);
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -47,6 +50,9 @@ private:
     Camera camera;
     float aspectRatio = 1;
     float debugRotation = 0.0f;
+
+    int maxYearFilter = 2026;
+    int minYearFilter = 1989;
 
     bool tooltipFrozen, useACLEDData = true, useUCDPData = true;
     QString currentTooltip;

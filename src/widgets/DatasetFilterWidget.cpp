@@ -21,15 +21,16 @@ DatasetFilterWidget::DatasetFilterWidget(QWidget* parent)
     ucdpCheckBox->setChecked(true);
     acledCheckBox->setChecked(true);
 
+    dateRangeWidget = new DateRangeWidget(this);
+
     layout->addWidget(title);
-    layout->addWidget(ucdpCheckBox);
-    layout->addWidget(acledCheckBox);
+    layout->addWidget(ucdpCheckBox, Qt::AlignLeft);
+    layout->addWidget(acledCheckBox, Qt::AlignLeft);
+    layout->addWidget(dateRangeWidget, Qt::AlignLeft);
 
-    connect(ucdpCheckBox, &QCheckBox::toggled,
-            this, &DatasetFilterWidget::UCDPVisibilityChanged);
+    connect(ucdpCheckBox, &QCheckBox::toggled, this, &DatasetFilterWidget::UCDPVisibilityChanged);
 
-    connect(acledCheckBox, &QCheckBox::toggled,
-            this, &DatasetFilterWidget::ACLEDVisibilityChanged);
+    connect(acledCheckBox, &QCheckBox::toggled, this, &DatasetFilterWidget::ACLEDVisibilityChanged);
 }
 
 void DatasetFilterWidget::SetUCDPCheckBoxText(QString text) {
@@ -38,4 +39,8 @@ void DatasetFilterWidget::SetUCDPCheckBoxText(QString text) {
 
 void DatasetFilterWidget::SetACLEDCheckBoxText(QString text) {
     acledCheckBox->setText(text);
+}
+
+DateRangeWidget* DatasetFilterWidget::GetDateRangeWidget() {
+    return dateRangeWidget;
 }

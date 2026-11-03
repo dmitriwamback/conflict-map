@@ -36,7 +36,9 @@ add_executable(conflict_map main.cpp
         src/core/objects/Marker.h
         src/util/Math.h
         src/widgets/DatasetFilterWidget.cpp
-        src/widgets/DatasetFilterWidget.h)
+        src/widgets/DatasetFilterWidget.h
+        src/widgets/DateRangeWidget.cpp
+        src/widgets/DateRangeWidget.h)
 
 target_link_libraries(conflict_map PRIVATE
         Qt6::Widgets

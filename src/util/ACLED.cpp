@@ -104,6 +104,7 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
         MarkerInstance instance{};
         instance.position = glm::vec3(mercator.x, mercator.y, 0.0f) * 10.0f;
         instance.yearNormalized = yearNormalized;
+        instance.year = date.year();
 
         points.push_back(instance);
     }

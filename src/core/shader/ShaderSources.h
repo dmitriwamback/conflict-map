@@ -45,18 +45,27 @@ static constexpr const char* MARKER_VERTEX_SHADER_SOURCE = R"(
     layout(location = 0) in vec3 position;
     layout(location = 1) in vec3 instancePosition;
     layout(location = 2) in float yearNormalized;
+    layout(location = 3) in int year;
 
     uniform mat4 lookAt;
     uniform mat4 projection;
     uniform mat4 model;
 
-    out float year;
+    uniform int maxYearFilter;
+    uniform int minYearFilter;
+
+    out float _year;
     out vec3 fragp;
 
     void main() {
         fragp = (model * vec4(position + vec3(instancePosition.x, instancePosition.y, 0.0), 1.0)).xyz;
-        year = yearNormalized;
-        gl_Position = projection * lookAt * model * vec4(position + vec3(instancePosition.x, instancePosition.y, 0.0), 1.0);
+        _year = yearNormalized;
+        if (year <= maxYearFilter && year >= minYearFilter) {
+            gl_Position = projection * lookAt * model * vec4(position + vec3(instancePosition.x, instancePosition.y, 0.0), 1.0);
+        }
+        else {
+            return;
+        }
     }
 )";
 
@@ -65,12 +74,12 @@ static constexpr const char* MARKER_FRAGMENT_SHADER_SOURCE = R"(
 
     out vec4 fragc;
     in vec3 fragp;
-    in float year;
+    in float _year;
 
     uniform vec3 cameraDirection;
 
     void main() {
-        fragc = vec4(year, 0.0, 0.0, 1.0);
+        fragc = vec4(_year, 0.0, 0.0, 1.0);
     }
 )";
 

@@ -33,6 +33,7 @@ struct HoveredMarker {
 struct MarkerInstance {
     glm::vec3 position;
     float yearNormalized;
+    int year;
     size_t dataIndex;
 };
 
