@@ -19,6 +19,8 @@
 #include "../util/ACLED.h"
 #include "../util/UCDP.h"
 
+#define RESOURCE_PATH "/Users/dmitri/Documents/working/conflict map"
+
 MapRenderer::MapRenderer() {
 
     setMouseTracking(true);
@@ -34,7 +36,7 @@ MapRenderer::MapRenderer() {
 
     for (int i = 0; i < 17; i++) {
 
-        std::string path = "/Users/dmitri/Documents/working/conflict map/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
+        std::string path = std::string(RESOURCE_PATH) + "/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
 
         std::vector<MarkerInstance> coordinates = UCDP::GetConflictPoints(path.c_str());
 
@@ -49,7 +51,7 @@ MapRenderer::MapRenderer() {
     acledMarker = Marker();
 
     for (int i = 0; i < 3; i++) {
-        std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/acled_data_" + std::to_string(i+1) + ".json";
+        std::string path = std::string(RESOURCE_PATH) + "/res/acled/acled_data_" + std::to_string(i+1) + ".json";
         std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
 
         for (MarkerInstance m : coordinates) {
@@ -81,15 +83,15 @@ void MapRenderer::initializeGL() {
     ucdpMarkersColorFramebuffer.Initialize();
 
     administrativeBorders = Borders();
-    administrativeBorders.Load("/Users/dmitri/Documents/working/conflict map/res/admin1.geojson");
+    administrativeBorders.Load(QString::fromStdString(std::string(RESOURCE_PATH) + "/res/admin1.geojson"));
     administrativeBorders.Initialize();
 
     internationalBorders = Borders();
-    internationalBorders.Load("/Users/dmitri/Documents/working/conflict map/res/world.geojson");
+    internationalBorders.Load(QString::fromStdString(std::string(RESOURCE_PATH) + "/res/world.geojson"));
     internationalBorders.Initialize();
 
     disputedBorders = Borders();
-    disputedBorders.Load("/Users/dmitri/Documents/working/conflict map/res/disputed_borders.geojson");
+    disputedBorders.Load(QString::fromStdString(std::string(RESOURCE_PATH) + "/res/disputed_borders.geojson"));
     disputedBorders.Initialize();
 
     composite = Quad();

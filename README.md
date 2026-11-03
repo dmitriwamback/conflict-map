@@ -25,40 +25,7 @@ python3 csv_to_json.py
 <p>Additionally, in <code>src/widgets/MapRenderer.cpp</code>, the paths for loading geojsons and the conflict data have to be changed too.</p>
 
 ```c++
-administrativeBorders = Borders();
-administrativeBorders.Load("<path>/res/admin1.geojson");
-administrativeBorders.Initialize();
-
-internationalBorders = Borders();
-internationalBorders.Load("<path>/res/world.geojson");
-internationalBorders.Initialize();
-```
-
-```c++
-for (int i = 0; i < 17; i++) {
-
-    std::string path = "<path>/res/ucdp/GEDEvent_v26_1_" + std::to_string(i+1) +".json";
-
-    std::vector<MarkerInstance> coordinates = UCDP::GetConflictPoints(path.c_str());
-
-    for (MarkerInstance m : coordinates) {
-        markers.push_back(m);
-    }
-}
-```
-
-```c++
-acledMarker = Marker();
-acledMarker.Initialize();
-
-for (int i = 0; i < 3; i++) {
-    std::string path = "<path>/res/acled/acled_data_" + std::to_string(i+1) + ".json";
-    std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
-
-    for (MarkerInstance m : coordinates) {
-        acledMarkers.push_back(m);
-    }
-}
+#define RESOURCE_PATH "<path-before-res>"
 ```
 
 Afterwards, build the application with <code>cmake</code> to run the app and see the map of archived conflict points.
