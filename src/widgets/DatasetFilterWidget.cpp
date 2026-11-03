@@ -31,3 +31,11 @@ DatasetFilterWidget::DatasetFilterWidget(QWidget* parent)
     connect(acledCheckBox, &QCheckBox::toggled,
             this, &DatasetFilterWidget::ACLEDVisibilityChanged);
 }
+
+void DatasetFilterWidget::SetUCDPCheckBoxText(QString text) {
+    ucdpCheckBox->setText(text);
+}
+
+void DatasetFilterWidget::SetACLEDCheckBoxText(QString text) {
+    acledCheckBox->setText(text);
+}

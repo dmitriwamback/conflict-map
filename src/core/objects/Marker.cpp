@@ -80,7 +80,9 @@ void Marker::Initialize() {
 
 void Marker::SetInstances(const std::vector<MarkerInstance>& instances) {
     this->instances = instances;
+}
 
+void Marker::UpdateInstances() {
     auto* gl = QOpenGLContext::currentContext()->extraFunctions();
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, instanceBufferObject);

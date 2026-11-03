@@ -41,6 +41,7 @@ public:
     void Initialize();
     void Render();
     void SetInstances(const std::vector<MarkerInstance>& instances);
+    void UpdateInstances();
     std::vector<MarkerInstance> GetInstances();
 
 private:

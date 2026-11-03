@@ -5,6 +5,8 @@
 1. <a href="https://ucdp.uu.se/">UCDP</a>
 2. <a href="https://acleddata.com/">ACLED</a>
 
+Additionally, all geojsons are from naturalearth.
+
 ## Running
 
 <p>Before running, the csv files in res/ucdp must be converted into json files.</p>

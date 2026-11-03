@@ -23,6 +23,9 @@ public:
     void SetACLEDVisibility(bool visible);
     void SetUCDPVisibility(bool visible);
 
+    int GetUCDPMarkerCount();
+    int GetACLEDMarkerCount();
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -34,7 +37,7 @@ protected:
 
 private:
 
-    Borders internationalBorders, administrativeBorders;
+    Borders internationalBorders, administrativeBorders, disputedBorders;
     Quad composite;
 
     Marker ucdpMarker, acledMarker;
@@ -64,6 +67,7 @@ private:
 
     ColorFramebuffer administrativeBorderColorFramebuffer,
                      internationalBorderColorFramebuffer,
+                     disputedBorderColorFramebuffer,
                      countryPolygonsColorFramebuffer,
                      ucdpMarkersColorFramebuffer,
                      acledMarkerColorFramebuffer;

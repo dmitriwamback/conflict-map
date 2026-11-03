@@ -14,6 +14,8 @@ class DatasetFilterWidget : public QWidget {
 
 public:
     explicit DatasetFilterWidget(QWidget* parent = nullptr);
+    void SetUCDPCheckBoxText(QString text);
+    void SetACLEDCheckBoxText(QString text);
 
 signals:
     void UCDPVisibilityChanged(bool visible);

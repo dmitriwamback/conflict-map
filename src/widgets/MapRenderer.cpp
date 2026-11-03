@@ -26,38 +26,8 @@ MapRenderer::MapRenderer() {
     auto* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&MapRenderer::update));
     timer->start(16);
-}
-
-void MapRenderer::initializeGL() {
-    initializeOpenGLFunctions();
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-    camera = Camera();
-    administrativeBorderColorFramebuffer = ColorFramebuffer();
-    internationalBorderColorFramebuffer = ColorFramebuffer();
-    acledMarkerColorFramebuffer = ColorFramebuffer();
-    ucdpMarkersColorFramebuffer = ColorFramebuffer();
-
-    administrativeBorderColorFramebuffer.Initialize();
-    internationalBorderColorFramebuffer.Initialize();
-    acledMarkerColorFramebuffer.Initialize();
-    ucdpMarkersColorFramebuffer.Initialize();
-
-    administrativeBorders = Borders();
-    administrativeBorders.Load("/Users/dmitri/Documents/working/conflict map/res/admin1.geojson");
-    administrativeBorders.Initialize();
-
-    internationalBorders = Borders();
-    internationalBorders.Load("/Users/dmitri/Documents/working/conflict map/res/world.geojson");
-    internationalBorders.Initialize();
-
-    composite = Quad();
-    composite.Initialize();
 
     ucdpMarker = Marker();
-    ucdpMarker.Initialize();
 
     std::vector<MarkerInstance> ucdpMarkers;
     std::vector<MarkerInstance> acledMarkers;
@@ -77,7 +47,6 @@ void MapRenderer::initializeGL() {
     ucdpMarker.SetInstances(ucdpMarkers);
 
     acledMarker = Marker();
-    acledMarker.Initialize();
 
     for (int i = 0; i < 3; i++) {
         std::string path = "/Users/dmitri/Documents/working/conflict map/res/acled/acled_data_" + std::to_string(i+1) + ".json";
@@ -90,6 +59,46 @@ void MapRenderer::initializeGL() {
     std::reverse(acledMarkers.begin(), acledMarkers.end());
 
     acledMarker.SetInstances(acledMarkers);
+}
+
+void MapRenderer::initializeGL() {
+    initializeOpenGLFunctions();
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    camera = Camera();
+    administrativeBorderColorFramebuffer = ColorFramebuffer();
+    internationalBorderColorFramebuffer = ColorFramebuffer();
+    disputedBorderColorFramebuffer = ColorFramebuffer();
+    acledMarkerColorFramebuffer = ColorFramebuffer();
+    ucdpMarkersColorFramebuffer = ColorFramebuffer();
+
+    administrativeBorderColorFramebuffer.Initialize();
+    internationalBorderColorFramebuffer.Initialize();
+    disputedBorderColorFramebuffer.Initialize();
+    acledMarkerColorFramebuffer.Initialize();
+    ucdpMarkersColorFramebuffer.Initialize();
+
+    administrativeBorders = Borders();
+    administrativeBorders.Load("/Users/dmitri/Documents/working/conflict map/res/admin1.geojson");
+    administrativeBorders.Initialize();
+
+    internationalBorders = Borders();
+    internationalBorders.Load("/Users/dmitri/Documents/working/conflict map/res/world.geojson");
+    internationalBorders.Initialize();
+
+    disputedBorders = Borders();
+    disputedBorders.Load("/Users/dmitri/Documents/working/conflict map/res/disputed_borders.geojson");
+    disputedBorders.Initialize();
+
+    composite = Quad();
+    composite.Initialize();
+
+    ucdpMarker.Initialize();
+    acledMarker.Initialize();
+    ucdpMarker.UpdateInstances();
+    acledMarker.UpdateInstances();
 
     borderShader = Shader();
     borderShader.Create(BORDER_VERTEX_SHADER_SOURCE, BORDER_FRAGMENT_SHADER_SOURCE);
@@ -125,6 +134,7 @@ void MapRenderer::resizeGL(int width, int height) {
 
     administrativeBorderColorFramebuffer.Update(pixelWidth, pixelHeight);
     internationalBorderColorFramebuffer.Update(pixelWidth, pixelHeight);
+    disputedBorderColorFramebuffer.Update(pixelWidth, pixelHeight);
     acledMarkerColorFramebuffer.Update(pixelWidth, pixelHeight);
     ucdpMarkersColorFramebuffer.Update(pixelWidth, pixelHeight);
 }
@@ -205,6 +215,18 @@ void MapRenderer::RenderBorders() {
     internationalBorders.Render();
 
     internationalBorderColorFramebuffer.Unbind();
+
+
+
+    disputedBorderColorFramebuffer.Bind();
+
+    glViewport(0, 0, pixelWidth, pixelHeight);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    disputedBorders.Render();
+
+    disputedBorderColorFramebuffer.Unbind();
 }
 
 void MapRenderer::RenderConflictMarkers() {
@@ -262,11 +284,15 @@ void MapRenderer::RenderComposite() {
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, acledMarkerColorFramebuffer.GetTextureID());
 
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, disputedBorderColorFramebuffer.GetTextureID());
+
     compositeShader.SetInt("adminBorderTexture", 0);
     compositeShader.SetInt("internBorderTexture", 1);
     compositeShader.SetInt("countryPolygonsTexture", 2);
     compositeShader.SetInt("ucdpMarkers", 3);
     compositeShader.SetInt("acledMarkers", 4);
+    compositeShader.SetInt("disputeBorderTexture", 5);
 
     composite.Render();
 }
@@ -378,4 +404,12 @@ void MapRenderer::SetACLEDVisibility(bool visible) {
 
 void MapRenderer::SetUCDPVisibility(bool visible) {
     useUCDPData = visible;
+}
+
+int MapRenderer::GetUCDPMarkerCount() {
+    return static_cast<int>(ucdpMarker.GetInstances().size());
+}
+
+int MapRenderer::GetACLEDMarkerCount() {
+    return static_cast<int>(acledMarker.GetInstances().size());
 }

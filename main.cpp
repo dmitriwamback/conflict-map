@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
 
     filterWidget->setStyleSheet(R"(
         DatasetFilterWidget {
-            background-color: rgba(30, 30, 30, 220);
             border-radius: 10px;
         }
 
@@ -52,7 +51,13 @@ int main(int argc, char *argv[]) {
             height: 20px;
         }
     )");
-    filterWidget->setFixedSize(200, 100);
+    filterWidget->setFixedSize(250, 100);
+
+    std::string ACLEDMarkerCount = std::to_string(mapViewer->GetACLEDMarkerCount());
+    std::string UCDPMarkerCount = std::to_string(mapViewer->GetUCDPMarkerCount());
+
+    filterWidget->SetACLEDCheckBoxText(QString::fromStdString("ACLED (" + ACLEDMarkerCount + " Events)"));
+    filterWidget->SetUCDPCheckBoxText(QString::fromStdString("UCDP (" + UCDPMarkerCount + " Events)"));
 
     auto* centralWidget = new QWidget();
     auto* layout = new QGridLayout(centralWidget);
@@ -65,15 +70,8 @@ int main(int argc, char *argv[]) {
 
     window.setCentralWidget(centralWidget);
 
-    QObject::connect(
-        filterWidget, &DatasetFilterWidget::UCDPVisibilityChanged,
-        mapViewer, &MapRenderer::SetUCDPVisibility
-    );
-
-    QObject::connect(
-        filterWidget, &DatasetFilterWidget::ACLEDVisibilityChanged,
-        mapViewer, &MapRenderer::SetACLEDVisibility
-    );
+    QObject::connect(filterWidget, &DatasetFilterWidget::UCDPVisibilityChanged, mapViewer, &MapRenderer::SetUCDPVisibility);
+    QObject::connect(filterWidget, &DatasetFilterWidget::ACLEDVisibilityChanged, mapViewer, &MapRenderer::SetACLEDVisibility);
 
     window.show();
 

@@ -97,6 +97,7 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
 
     uniform sampler2D adminBorderTexture;
     uniform sampler2D internBorderTexture;
+    uniform sampler2D disputeBorderTexture;
     uniform sampler2D countryPolygonsTexture;
     uniform sampler2D ucdpMarkers;
     uniform sampler2D acledMarkers;
@@ -104,6 +105,7 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
     void main() {
         vec4 adminBorderColor = texture(adminBorderTexture, uv);
         vec4 internBorderColor = texture(internBorderTexture, uv);
+        vec4 disputeBorderColor = texture(disputeBorderTexture, uv);
         //vec4 polygonColor = texture(countryPolygonsTexture, uv);
 
         vec3 background = vec3(16.0, 24.0, 28.0)/255.0 * 0.7;
@@ -121,10 +123,11 @@ static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
         vec3 ucdpMarkerColor = mix(ucdpPastColor, ucdpRecentColor, ucdpYear);
         vec3 acledMarkerColor = mix(acledPastColor, acledRecentColor, acledYear);
 
-        vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 1.25, adminBorderColor.a * 0.2);
+        vec3 composite = mix(background, vec3(41.0, 124.0, 74.0)/255.0 * 1.5, adminBorderColor.a * 0.2);
         composite = mix(composite, ucdpMarkerColor, ucdp.a);
         composite = mix(composite, acledMarkerColor, acled.a);
-        composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 2, internBorderColor.a * 10);
+        composite = mix(composite, internBorderColor.rgb * vec3(1.0, 0.5, 0.0) * 2, (internBorderColor.a - disputeBorderColor.a) * 10);
+        composite = mix(composite, vec3(1.0, 0.0, 0.0) * 10, disputeBorderColor.a * 15);
 
 
         //composite = mix(composite, polygonColor.rgb * 5.0, polygonColor.a);

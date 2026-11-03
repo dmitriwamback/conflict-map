@@ -46,7 +46,7 @@ inline glm::vec2 ToWinkelTripel(double lat, double lon) {
 }
 
 inline glm::vec2 Project(float lat, float lon) {
-   return ToWinkelTripel(lat, lon);
+   return ToMercator(lat, lon);
 }
 
 inline float ToRadians(float degrees) {
