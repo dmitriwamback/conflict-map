@@ -20,6 +20,9 @@ class MapRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
 public:
     MapRenderer();
 
+    void SetACLEDVisibility(bool visible);
+    void SetUCDPVisibility(bool visible);
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -28,6 +31,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+
 private:
 
     Borders internationalBorders, administrativeBorders;
@@ -41,7 +45,7 @@ private:
     float aspectRatio = 1;
     float debugRotation = 0.0f;
 
-    bool tooltipFrozen;
+    bool tooltipFrozen, useACLEDData = true, useUCDPData = true;
     QString currentTooltip;
 
     std::vector<HoveredMarker> hoveredMarkers;
@@ -50,8 +54,6 @@ private:
 
     void RenderBorders();
     void RenderConflictMarkers();
-    void RenderScene();
-    void RenderCountryPolygons();
     void RenderComposite();
 
     QPointF ProjectToScreen(const glm::vec3& position, const glm::mat4& projection, const glm::mat4& view, const glm::mat4& model);

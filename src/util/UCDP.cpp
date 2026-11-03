@@ -27,10 +27,10 @@ std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
         return std::vector<MarkerInstance>();
     }
 
-    float ucdpMaxYear = 2025;
-    float ucdpMinYear = 1989;
+    int ucdpMaxYear = 20251231;
+    int ucdpMinYear = 19890101;
 
-    float delta = ucdpMaxYear - ucdpMinYear;
+    float delta = static_cast<float>(ucdpMaxYear - ucdpMinYear);
 
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
 
@@ -40,9 +40,10 @@ std::vector<MarkerInstance> UCDP::GetConflictPoints(const char* jsonPath) {
         QJsonObject event = value.toObject();
 
         int id = event["id"].toInt();
-        int year = event["year"].toInt();
+        QDate date = QDate::fromString(event["date_start"].toString().split(" ")[0], Qt::ISODate);
+        int timestamp = date.year() * 10000 + date.month() * 100 + date.day();
 
-        float yr = (static_cast<float>(year) - ucdpMinYear) / delta;
+        float yr = (static_cast<float>(timestamp) - static_cast<float>(ucdpMinYear)) / delta;
 
         QString country = event["country"].toString();
         QString conflict = event["conflict_name"].toString();

@@ -1,11 +1,14 @@
 #include <iostream>
+
 #include <QOpenGLContext>
 #include <QSurfaceFormat>
 #include <QApplication>
 #include <QMainWindow>
 #include <QHBoxLayout>
+#include <QWidget>
 
 #include "src/widgets/MapRenderer.h"
+#include "src/widgets/DatasetFilterWidget.h"
 
 int main(int argc, char *argv[]) {
     QSurfaceFormat format;
@@ -25,14 +28,52 @@ int main(int argc, char *argv[]) {
     window.resize(1200, 800);
 
     auto* mapViewer = new MapRenderer();
-    auto* centralWidget = new QWidget();
-    auto* layout = new QHBoxLayout(centralWidget);
+    auto* filterWidget = new DatasetFilterWidget();
 
-    mapViewer->resize(1200, 800);
-    layout->addWidget(mapViewer);
+    filterWidget->setStyleSheet(R"(
+        DatasetFilterWidget {
+            background-color: rgba(30, 30, 30, 220);
+            border-radius: 10px;
+        }
+
+        QLabel {
+            color: white;
+            font-size: 18px;
+        }
+
+        QCheckBox {
+            color: white;
+            font-size: 16px;
+            spacing: 10px;
+        }
+
+        QCheckBox::indicator {
+            width: 20px;
+            height: 20px;
+        }
+    )");
+    filterWidget->setFixedSize(200, 100);
+
+    auto* centralWidget = new QWidget();
+    auto* layout = new QGridLayout(centralWidget);
+
+    layout->addWidget(mapViewer, 0, 0);
+    layout->addWidget(filterWidget, 0, 0, Qt::AlignTop | Qt::AlignRight);
+
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+
     window.setCentralWidget(centralWidget);
+
+    QObject::connect(
+        filterWidget, &DatasetFilterWidget::UCDPVisibilityChanged,
+        mapViewer, &MapRenderer::SetUCDPVisibility
+    );
+
+    QObject::connect(
+        filterWidget, &DatasetFilterWidget::ACLEDVisibilityChanged,
+        mapViewer, &MapRenderer::SetACLEDVisibility
+    );
 
     window.show();
 

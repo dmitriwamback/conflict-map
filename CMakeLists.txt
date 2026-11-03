@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 4.3)
 project(conflict_map)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS
         Widgets
@@ -33,7 +34,9 @@ add_executable(conflict_map main.cpp
         src/util/UCDP.h
         src/core/objects/Marker.cpp
         src/core/objects/Marker.h
-        src/util/Math.h)
+        src/util/Math.h
+        src/widgets/DatasetFilterWidget.cpp
+        src/widgets/DatasetFilterWidget.h)
 
 target_link_libraries(conflict_map PRIVATE
         Qt6::Widgets

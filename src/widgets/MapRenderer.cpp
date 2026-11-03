@@ -227,7 +227,7 @@ void MapRenderer::RenderConflictMarkers() {
     glViewport(0, 0, pixelWidth, pixelHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ucdpMarker.Render();
+    if (useUCDPData) ucdpMarker.Render();
 
     ucdpMarkersColorFramebuffer.Unbind();
 
@@ -236,7 +236,7 @@ void MapRenderer::RenderConflictMarkers() {
     glViewport(0, 0, pixelWidth, pixelHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    acledMarker.Render();
+    if (useACLEDData) acledMarker.Render();
 
     acledMarkerColorFramebuffer.Unbind();
 }
@@ -370,4 +370,12 @@ QString MapRenderer::BuildTooltipText() const {
     }
 
     return text.trimmed();
+}
+
+void MapRenderer::SetACLEDVisibility(bool visible) {
+    useACLEDData = visible;
+}
+
+void MapRenderer::SetUCDPVisibility(bool visible) {
+    useUCDPData = visible;
 }
