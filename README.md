@@ -5,7 +5,7 @@
 1. <a href="https://ucdp.uu.se/">UCDP</a>
 2. <a href="https://acleddata.com/">ACLED</a>
 
-Additionally, all geojsons are from naturalearth.
+Additionally, all geojsons are from <a href="https://www.naturalearthdata.com/">naturalearthdata</a>.
 
 ## Running
 
