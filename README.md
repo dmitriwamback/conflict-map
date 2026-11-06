@@ -68,6 +68,6 @@ cmake --build .
 
 ---
 
-### Data over the Horn of Africa - November 5, 2026
+### Data centered on the Arabian Sea - November 5, 2026
 
-<img width="1511" height="915" alt="Image" src="https://github.com/user-attachments/assets/0b3b6db0-acc2-4554-9190-9f9fd7973aba" />
+<img width="1512" height="915" alt="Image" src="https://github.com/user-attachments/assets/355208c4-0798-4bd8-9a9b-224ae5263700" />
