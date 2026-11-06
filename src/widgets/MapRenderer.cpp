@@ -50,12 +50,14 @@ MapRenderer::MapRenderer() {
 
     acledMarker = Marker();
 
-    for (int i = 0; i < 11; i++) {
-        std::string path = std::string(RESOURCE_PATH) + "/res/acled/acled_data_" + std::to_string(i+1) + ".json";
-        std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
+    for (int i = 2000; i <= 2025; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::string path = std::string(RESOURCE_PATH) + "/res/acled/acled_data_" + std::to_string(i) + "_" + std::to_string(j + 1) + ".json";
+            std::vector<MarkerInstance> coordinates = ACLED::GetConflictPoints(path.c_str());
 
-        for (MarkerInstance m : coordinates) {
-            acledMarkers.push_back(m);
+            for (MarkerInstance m : coordinates) {
+                acledMarkers.push_back(m);
+            }
         }
     }
     std::reverse(acledMarkers.begin(), acledMarkers.end());

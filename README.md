@@ -5,6 +5,8 @@
 1. <a href="https://ucdp.uu.se/">UCDP</a>
 2. <a href="https://acleddata.com/">ACLED</a>
 
+<p>UCDP data ranges from 1989-2026 and ACLED data ranges from 2020-2025.</p>
+
 Additionally, all geojsons are from <a href="https://www.naturalearthdata.com/">naturalearthdata</a>.
 
 ## Running
@@ -47,12 +49,6 @@ cmake --build .
 
 ---
 
-### Data over Afghanistan + Pakistan - November 1, 2026 (UCDP)
-
-<img width="1510" height="907" alt="Image" src="https://github.com/user-attachments/assets/a2f6ad38-3e09-48d2-acc1-213d4c91448b" />
-
----
-
 ### Data over Myanmar - November 2, 2026 (UCDP and ACLED)
 
 <img width="1511" height="914" alt="Image" src="https://github.com/user-attachments/assets/c8d39f8f-f441-4ee8-90a9-0e42244e64c5" />
@@ -68,3 +64,10 @@ cmake --build .
 ### Data over Central and South America - November 3, 2026
 
 <img width="1512" height="917" alt="Image" src="https://github.com/user-attachments/assets/2e806e9b-2804-4622-b65d-4f2b2f09ed18" />
+
+
+---
+
+### Data over the Horn of Africa - November 5, 2026
+
+<img width="1511" height="915" alt="Image" src="https://github.com/user-attachments/assets/0b3b6db0-acc2-4554-9190-9f9fd7973aba" />

@@ -2,25 +2,26 @@
 import json
 import math
 
-input_file = "acled_data.json"
+for i in range(2000, 2026):
+    input_file = f"acled_data_full_{i}.json"
 
-with open(input_file, "r", encoding="utf-8") as f:
-    root = json.load(f)
+    with open(input_file, "r", encoding="utf-8") as f:
+        root = json.load(f)
 
-response = root[0]
-events = response["data"]
+    response = root[0]
+    events = response["data"]
 
-chunk_size = math.ceil(len(events) / 4)
+    chunk_size = math.ceil(len(events) / 3)
 
-for i in range(4):
-    chunk = events[i * chunk_size:(i + 1) * chunk_size]
+    for j in range(3):
+        chunk = events[j * chunk_size:(j + 1) * chunk_size]
 
-    output = response.copy()
-    output["data"] = chunk
+        output = response.copy()
+        output["data"] = chunk
 
-    filename = f"acled_data_{i + 8}.json"
+        filename = f"acled_data_{i}_{j + 1}.json"
 
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(output, f, separators=(",", ":"), ensure_ascii=False)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(output, f, separators=(",", ":"), ensure_ascii=False)
 
-    print(f"{filename}: {len(chunk)} events")
+        print(f"{filename}: {len(chunk)} events")

@@ -57,13 +57,8 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
 
     QJsonArray events = root["data"].toArray();
 
-    int minYear = 20230101;
+    int minYear = 20000101;
     int maxYear = 20251102;
-
-    if (minYear == INT_MAX) {
-        qDebug() << "No valid ACLED event dates";
-        return points;
-    }
 
     float delta = static_cast<float>(maxYear - minYear);
 
@@ -71,13 +66,15 @@ std::vector<MarkerInstance> ACLED::GetConflictPoints(const char* jsonPath) {
 
         QJsonObject event = value.toObject();
 
-        QDate date = QDate::fromString(
-            event["event_date"].toString(),
-            Qt::ISODate
-        );
+        QDate date = QDate::fromString(event["event_date"].toString(), Qt::ISODate);
 
-        if (!date.isValid())
+        if (!date.isValid()) {
             continue;
+        }
+
+        if (event["disorder_type"].toString() != "Political violence" && event["event_type"].toString() != "Riots") {
+            continue;
+        }
 
         bool latitudeOk = false;
         bool longitudeOk = false;
